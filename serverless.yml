@@ -37,6 +37,16 @@ functions:
       - http:
           path: webhook/twitter/subscribe
           method: post
+  deleteWebhook:
+    handler: bin/deleteWebhook
+    events:
+      - http:
+          path: webhook/twitter/delete
+          method: delete
+          request:
+            parameters:
+              querystrings:
+                crc_token: true
 
 package:
  exclude:
