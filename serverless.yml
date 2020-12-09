@@ -47,6 +47,12 @@ functions:
             parameters:
               querystrings:
                 crc_token: true
+  getAllWebhooks:
+    handler: bin/getAllWebhooks
+    events:
+      - http:
+          path: webhook/twitter/all
+          method: get
 
 package:
  exclude:

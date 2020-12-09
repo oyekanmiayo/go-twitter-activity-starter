@@ -24,30 +24,19 @@ func createClient() *http.Client {
 	return config.Client(oauth1.NoContext, token)
 }
 
-// DeleteWebhookHandler deletes a particular webhook url's subscription. If successful, the deleted url
-// will no longer receive events from Twitter
-func DeleteWebhookHandler(request events.APIGatewayProxyRequest) (Response, error) {
+// GetWebhooksHandler ...
+func GetWebhooksHandler(request events.APIGatewayProxyRequest) (Response, error) {
 
 	httpClient := createClient()
 
-	webhookID := request.QueryStringParameters["webhook_id"]
-	if webhookID == "" {
-		// return bad request
-		return Response{
-			StatusCode:      400,
-			IsBase64Encoded: false,
-			Body:            "No webhook_id param present",
-			Headers: map[string]string{
-				"Content-Type": "application/json",
-			},
-		}, nil
-	}
+	path := `https://api.twitter.com/1.1/account_activity/all/webhooks.json`
+	req, _ := http.NewRequest("GET", path, nil)
 
-	path := fmt.Sprintf("https://api.twitter.com/1.1/account_activity/all/dev/webhooks/%s.json", webhookID)
-	req, _ := http.NewRequest("DELETE", path, nil)
+	bearer := fmt.Sprintf("bearer %s", os.Getenv("TWITTER_BEARER_TOKEN"))
+	req.Header.Add("Authorization", bearer)
 
 	resp, err := httpClient.Do(req)
-	if err != nil || resp.StatusCode != 204 {
+	if err != nil {
 		return Response{
 			StatusCode: resp.StatusCode,
 			Body:       err.Error(),
@@ -57,17 +46,11 @@ func DeleteWebhookHandler(request events.APIGatewayProxyRequest) (Response, erro
 
 	// Read Response Body
 	respBody, _ := ioutil.ReadAll(resp.Body)
-	if resp.StatusCode != 204 {
-		return Response{
-			StatusCode: resp.StatusCode,
-			Body:       string(respBody),
-		}, err
-	}
 
 	return Response{
 		StatusCode:      200,
 		IsBase64Encoded: false,
-		Body:            "Webhook deleted successfully",
+		Body:            string(respBody),
 		Headers: map[string]string{
 			"Content-Type": "application/json",
 		},
@@ -75,5 +58,5 @@ func DeleteWebhookHandler(request events.APIGatewayProxyRequest) (Response, erro
 }
 
 func main() {
-	lambda.Start(DeleteWebhookHandler)
+	lambda.Start(GetWebhooksHandler)
 }

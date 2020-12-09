@@ -4,6 +4,7 @@ build:
 	env GOOS=linux go build -ldflags="-s -w" -o bin/subscribeWebhook subscribeWebhook/main.go
 	env GOOS=linux go build -ldflags="-s -w" -o bin/eventHandler eventHandler/main.go
 	env GOOS=linux go build -ldflags="-s -w" -o bin/deleteWebhook deleteWebhook/main.go
+	env GOOS=linux go build -ldflags="-s -w" -o bin/getAllWebhooks getAllWebhooks/main.go
 	
 .PHONY: clean
 clean:
