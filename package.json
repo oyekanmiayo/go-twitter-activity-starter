@@ -1,0 +1,7 @@
+{
+  "name": "go-twitter-activity-starter",
+  "version": "0.0.1",
+  "description": "Functions to setup a go webhook for Twitter's Account Activity API",
+  "author": "Ayomide Oyekanmi <ayomideoyekanmi@gmail.com>",
+  "license": "Apache 2.0"
+}

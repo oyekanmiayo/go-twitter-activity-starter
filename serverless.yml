@@ -1,0 +1,45 @@
+service: go-twitter-activity-starter
+
+frameworkVersion: ">=1.28.0 <2.0.0"
+
+provider:
+  name: aws
+  runtime: go1.x
+  stage: dev
+  profile: # Choose profile name that has the appropriate credentials for AWS
+
+functions:
+  eventHandler:
+    handler: bin/eventHandler
+    events:
+      - http:
+          path: webhook/twitter
+          method: post
+  handleCRCToken:
+    handler: bin/handleCRCToken
+    events:
+      - http:
+          path: webhook/twitter
+          method: get
+          request:
+            parameters:
+              querystrings:
+                crc_token: true
+  registerWebhook:
+    handler: bin/registerWebhook
+    events:
+      - http:
+          path: webhook/twitter/register
+          method: post
+  subscribeWebhook:
+    handler: bin/subscribeWebhook
+    events:
+      - http:
+          path: webhook/twitter/subscribe
+          method: post
+
+package:
+ exclude:
+   - ./**
+ include:
+   - ./bin/**
